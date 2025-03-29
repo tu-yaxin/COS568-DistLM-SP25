@@ -176,32 +176,21 @@ def train(args, train_dataset, model, tokenizer):
 
 
                 ###################
-                #### 2a.3
+                #### 2b
                 grads = []
                 for param in model.parameters():
                     grads.append(param.grad)
     
-                gather_grads = [None] * 4
-                torch.distributed.all_gather_object(gather_grads, grads) 
-                
-                # averaging grads
-                if args.local_rank == 0: 
-                    avg_grads = [None] * len(grads)
-                    for i in range(0,len(grads)):
-                        grads_to_average = [g[i] for g in gather_grads]
-                        avg_grads[i] = sum(grads_to_average) / len(grads_to_average)
-                   
-                    # scattering avg vector to all workers
-                    scatter_grads = [avg_grads] * 4
-                else:
-                    scatter_grads = [None] * 4
-                grads_scattered = [None]
-                torch.distributed.scatter_object_list(grads_scattered, scatter_grads, src=0) 
+                  #### 2b: perform gradient aggregation - use all_reduce
+                for grad in grads:
+                    torch.distributed.all_reduce(grad, op=torch.distributed.ReduceOp.SUM)
+                          
                 i = 0
                 for param in model.parameters():
-                    param.grad = grads_scattered[0][i]
+                    param.grad = grads[i]
                     i+=1
-                print(i)
+
+
                 
 
                 

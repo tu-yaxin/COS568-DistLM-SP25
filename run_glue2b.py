@@ -1,4 +1,4 @@
-# code for 2a
+# code for 2atime_per_iter
 # coding=utf-8
 # Copyright 2018 The Google AI Language Team Authors and The HuggingFace Inc. team.
 # Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
@@ -88,9 +88,9 @@ def train(args, train_dataset, model, tokenizer):
     
     if args.max_steps > 0:
         t_total = args.max_steps
-        args.num_train_epochs = args.max_steps // (len(train_dataloader) // args.gradient_accumulation_steps) + 1
+        args.num_train_epochs = args.max_steps // (len(dataloader) // args.gradient_accumulation_steps) + 1
     else:
-        t_total = len(train_dataloader) // args.gradient_accumulation_steps * args.num_train_epochs
+        t_total = len(dataloader) // args.gradient_accumulation_steps * args.num_train_epochs
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
     optimizer_grouped_parameters = [
@@ -126,14 +126,14 @@ def train(args, train_dataset, model, tokenizer):
 
     print("Iteration start!")
     for _ in train_iterator:
-        epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=args.local_rank not in [-1, 0])
+        epoch_iterator = tqdm(dataloader, desc="Iteration", disable=args.local_rank not in [-1, 0])
         
 
         for step, batch in enumerate(epoch_iterator):
 
             ############2a.2
             if step == 1:
-                time_each_iter = []
+                time_per_iter = []
             if step >= 1:
                 time_start = time.time()
             
@@ -176,32 +176,21 @@ def train(args, train_dataset, model, tokenizer):
 
 
                 ###################
-                #### 2a.3
+                #### 2b
                 grads = []
                 for param in model.parameters():
                     grads.append(param.grad)
     
-                gather_grads = [None] * 4
-                torch.distributed.all_gather_object(gather_grads, grads) 
-                
-                # averaging grads
-                if args.local_rank == 0: 
-                    avg_grads = [None] * len(grads)
-                    for i in range(0,len(grads)):
-                        grads_to_average = [g[i] for g in gather_grads]
-                        avg_grads[i] = sum(grads_to_average) / len(grads_to_average)
-                   
-                    # scattering avg vector to all workers
-                    scatter_grads = [avg_grads] * 4
-                else:
-                    scatter_grads = [None] * 4
-                grads_scattered = [None]
-                torch.distributed.scatter_object_list(grads_scattered, scatter_grads, src=0) 
+                  #### 2b: perform gradient aggregation - use all_reduce
+                for grad in grads:
+                    torch.distributed.all_reduce(grad, op=torch.distributed.ReduceOp.SUM)
+                          
                 i = 0
                 for param in model.parameters():
-                    param.grad = grads_scattered[0][i]
+                    param.grad = grads[i]
                     i+=1
-                print(i)
+
+
                 
 
                 
