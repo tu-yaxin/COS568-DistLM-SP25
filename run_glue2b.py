@@ -506,3 +506,56 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+# import matplotlib.pyplot as plt
+# import math
+# nrows = 2
+# ncols = 2
+# fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(10, 10))
+# fig.subplots_adjust(wspace=0.7, hspace = 0.7)
+
+# for i in range(0, 4):
+#     with open('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_2a/losses2a.txt', 'r') as file:
+#         lines = file.read().splitlines()
+#         losses = [float(l.split(':')[1]) for l in lines]
+#     row = math.floor(i/ncols)
+#     col = i%ncols
+    
+#     axes[row, col].plot(losses)
+#     axes[row, col].set_title('node '+ str(i))
+#     axes[row, col].set_xlabel('Iteration time')
+#     axes[row, col].set_ylabel('Loss')
+
+# plt.savefig('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_2a/losses2a.png')
+
+# for i in range(0, 4):
+#     with open('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_2b/losses2a.txt', 'r') as file:
+#         lines = file.read().splitlines()
+#         losses = [float(l.split(':')[1]) for l in lines]
+#     row = math.floor(i/ncols)
+#     col = i%ncols
+    
+#     axes[row, col].plot(losses)
+#     axes[row, col].set_title('node '+ str(i))
+#     axes[row, col].set_xlabel('Iteration time')
+#     axes[row, col].set_ylabel('Loss')
+
+# plt.savefig('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_2b/losses2a.png')
+
+# for i in range(0, 4):
+#     with open('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_3/losses2a.txt', 'r') as file:
+#         lines = file.read().splitlines()
+#         losses = [float(l.split(':')[1]) for l in lines]
+#     row = math.floor(i/ncols)
+#     col = i%ncols
+    
+#     axes[row, col].plot(losses)
+#     axes[row, col].set_title('node '+ str(i))
+#     axes[row, col].set_xlabel('Iteration time')
+#     axes[row, col].set_ylabel('Loss')
+
+# plt.savefig('/proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/task_3/losses2a.png')
+
+
+
+
