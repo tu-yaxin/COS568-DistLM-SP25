@@ -2,8 +2,8 @@ cd /proj/cos568proj2-PG0/groups/yt9801/COS568-DistLM-SP25/
 export GLUE_DIR=/proj/cos568proj2-PG0/glue_data
 export TASK_NAME=RTE
 # rm -r /tmp/2a/
-mkdir -p /tmp/2b/
-mkdir -p /tmp/2b/cache/ # you have to initialize a new cache folder each time or you are using outdated cache and your model crashes!!!!!!
+mkdir -p /tmp/3/
+mkdir -p /tmp/3/cache/ # you have to initialize a new cache folder each time or you are using outdated cache and your model crashes!!!!!!
 
 python3 run_glue2b.py \
   --model_type bert \
@@ -16,8 +16,8 @@ python3 run_glue2b.py \
   --per_device_train_batch_size 16 \
   --learning_rate 2e-5 \
   --num_train_epochs 1 \
-  --output_dir /tmp/2b/ \
-  --cache_dir /tmp/2b/cache/ \
+  --output_dir /tmp/3/ \
+  --cache_dir /tmp/3/cache/ \
   --local_rank ${1} \
   --overwrite_output_dir \
   --master_ip 10.10.1.2 \
