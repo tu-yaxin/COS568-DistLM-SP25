@@ -133,7 +133,7 @@ def train(args, train_dataset, model, tokenizer):
 
             ############2a.2
             if step == 1:
-                time_each_iter = []
+                time_per_iter = []
             if step >= 1:
                 time_start = time.time()
             
